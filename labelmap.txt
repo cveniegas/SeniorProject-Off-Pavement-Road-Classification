@@ -1,0 +1,11 @@
+Truck
+Truck w/ Trailer
+Trailer
+Bus
+Pedestrian
+Motorcycle
+Pickup Truck
+Car
+Car w/ Trailer
+Commercial Vehicle
+Van
