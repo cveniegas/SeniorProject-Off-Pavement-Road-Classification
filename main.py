@@ -16,7 +16,7 @@ layout = [
     [sg.OK(), sg.Cancel()]
 ]
 
-window = sg.Window('Object Detection GUI', layout, default_element_size=(14, 1), text_justification='right',
+window = sg.Window('Object Detection - Hornet Engineers', layout, default_element_size=(14, 1), text_justification='right',
                    auto_size_text=False)
 
 while True:
@@ -31,9 +31,11 @@ while True:
 
         MODEL_NAME = args.modeldir
         VIDEO_NAME = args.video
+
         min_conf_threshold = 0.5
         LABELMAP_NAME = 'labelmap.txt'
         CWD_PATH = os.getcwd()
+
         PATH_TO_CKPT = os.path.join(CWD_PATH, MODEL_NAME, 'detect.tflite')
         PATH_TO_LABELS = os.path.join(CWD_PATH, MODEL_NAME, LABELMAP_NAME)
 
@@ -108,16 +110,16 @@ while True:
                     ymax = int(min(imH, (boxes[i][2] * imH)))
                     xmax = int(min(imW, (boxes[i][3] * imW)))
 
-                    cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (10, 255, 0), 4)
+                    cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (0, 0, 255), 1)
 
                     object_name = labels[int(classes[i])]
                     label = '%s: %d%%' % (object_name, int(scores[i] * 100))
                     labelSize, baseLine = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)
                     label_ymin = max(ymin, labelSize[1] + 10)
                     cv2.rectangle(frame, (xmin, label_ymin - labelSize[1] - 10),
-                                  (xmin + labelSize[0], label_ymin + baseLine - 10), (255, 255, 255),
+                                  (xmin + labelSize[0], label_ymin + baseLine - 10), (0, 255, 0),
                                   cv2.FILLED) 
-                    cv2.putText(frame, label, (xmin, label_ymin - 7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0),
+                    cv2.putText(frame, label, (xmin, label_ymin - 7), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0),
                                 2)
                     counter += 1  # Increment the counter when an object is detected
 
