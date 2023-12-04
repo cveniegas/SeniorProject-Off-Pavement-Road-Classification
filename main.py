@@ -2,22 +2,22 @@ import os
 import cv2
 import numpy as np
 import argparse
-import importlib.util
 import PySimpleGUI as sg
 from tensorflow.lite.python.interpreter import Interpreter
+import re
 
 sg.theme('light green')
 
 layout = [
-    [sg.Text('Object Detection Using Tensorflow-trained Classifier', size=(45, 1), font=('Any', 18),
-             text_color='#1c86ee', justification='center')],
-    [sg.Text('Folder tflite'), sg.In(size=(25, 1), key='modeldir'), sg.FolderBrowse()],
-    [sg.Text('Video file'), sg.In('test.mp4', size=(25, 1), key='video'), sg.FileBrowse()],
-    [sg.OK(), sg.Cancel()]
+   [sg.Text('Road User Detection Using Tensorflow', size=(45, 1), font=('Any', 18),
+            text_color='#1c86ee', justification='center')],
+   [sg.Text('Model Directory'), sg.In(size=(25, 1), key='modeldir'), sg.FolderBrowse()],
+   [sg.Text('Video file'), sg.In('test.mp4', size=(25, 1), key='video'), sg.FileBrowse()],
+   [sg.OK(), sg.Cancel()]
 ]
 
-window = sg.Window('Object Detection - Hornet Engineers', layout, default_element_size=(14, 1), text_justification='right',
-                   auto_size_text=False)
+window = sg.Window('Traffic Classifier - Hornet Engineers', layout, default_element_size=(14, 1), text_justification='right',
+                  auto_size_text=False)
 
 while True:
     event, values = window.read()
@@ -70,21 +70,41 @@ while True:
         # Counter window layout
         counter_layout = [
             [sg.Text('Object Counter', size=(20, 1), font=('Any', 14), text_color='#1c86ee')],
-            [sg.Text('Count:', size=(10, 1)), sg.Text('0', size=(5, 1), key='counter')]
+            [sg.Text('Count:', size=(10, 1)), sg.Text('0', size=(5, 1), key='counter')],
+            [sg.Text('Car Count:', size=(10, 1)), sg.Text('0', size=(5, 1), key='Car_count')],
+            [sg.Text('Trailer Count:', size=(10, 1)), sg.Text('0', size=(5, 1), key='Trailer_count')],
+            [sg.Text('Commercial Count:', size=(10, 1)), sg.Text('0', size=(5, 1), key='Commercial_count')],
+            [sg.Text('Pedestrian Count:', size=(10, 1)), sg.Text('0', size=(5, 1), key='Pedestrian_count')],
+            [sg.Text('Bus Count:', size=(10, 1)), sg.Text('0', size=(5, 1), key='Bus_count')],
+            [sg.Text('Motorcyclist Count:', size=(10, 1)), sg.Text('0', size=(5, 1), key='Motorcyclist_count')],
+            [sg.Text('Truck Count:', size=(10, 1)), sg.Text('0', size=(5, 1), key='Truck_count')]
         ]
 
         # Create the counter window
         counter_window = sg.Window('Object Counter', counter_layout, default_element_size=(14, 1),
                                    text_justification='right', auto_size_text=False)
 
+        unique_objects = set()
+        frame_counter = 0
         counter = 0
         counter_update_interval = 5  # Update counter window every 5 frames
-        frame_counter = 0
+        Car_count = 0
+        Trailer_count = 0
+        Commercial_count = 0
+        Pedestrian_count = 0
+        Bus_count = 0
+        Motorcyclist_count = 0
+        highest_count = 0
+        Truck_count = 0
+        highest_count_Trailer, highest_count_Car, highest_count_Commercial, highest_count_Pedestrian, highest_count_Bus, highest_count_Motorcyclist, highest_count_Truck = 0, 0, 0, 0, 0, 0, 0
+        # Draw a line in the middle of the screen (horizontal line)
+        middle_of_screen = int(imH // 2)
 
         while video.isOpened():
             ret, frame = video.read()
             frame_counter += 1
 
+            # cv2.line(frame, (0, middle_of_screen), (int(imW), middle_of_screen), (0, 255, 0), 2)
             if not ret:
                 print('Reached the end of the video!')
                 break
@@ -113,31 +133,55 @@ while True:
                     cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (0, 0, 255), 1)
 
                     object_name = labels[int(classes[i])]
-                    label = '%s: %d%%' % (object_name, int(scores[i] * 100))
+                    object_id = f"{object_name}_{i}"
+                    label = '%s: %d%%' % (object_id, int(scores[i] * 100))
                     labelSize, baseLine = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)
                     label_ymin = max(ymin, labelSize[1] + 10)
                     cv2.rectangle(frame, (xmin, label_ymin - labelSize[1] - 10),
                                   (xmin + labelSize[0], label_ymin + baseLine - 10), (0, 255, 0),
-                                  cv2.FILLED) 
+                                  cv2.FILLED)
                     cv2.putText(frame, label, (xmin, label_ymin - 7), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0),
                                 2)
-                    counter += 1  # Increment the counter when an object is detected
-
             cv2.imshow('Object detector', frame)
-
-            # Update object counter window every counter_update_interval frames
             if frame_counter % counter_update_interval == 0:
                 event_counter, values_counter = counter_window.read(timeout=10)  # Use a timeout to make it non-blocking
                 if event_counter == sg.WIN_CLOSED or event_counter == 'Cancel':
                     break
                 counter_window['counter'].update(counter)
-
             if cv2.waitKey(1) == ord('q'):
                 break
 
         video.release()
         cv2.destroyAllWindows()
-
-        counter_window.close()  # Close the counter window when the main video processing is done
+        counter_window.close()
 
 window.close()
+
+"""
+                    if object_id not in unique_objects:
+                        unique_objects.add(object_id)
+
+"""
+"""""
+                   if object_name == 'Car' and counter > highest_count_Car and object_id in unique_objects:
+                       highest_count_Car = counter
+                       counter_window['Car_count'].update(highest_count_Car)
+                   elif object_name == 'Trailer' and counter > highest_count_Trailer and object_id in unique_objects:
+                       highest_count_Trailer = counter
+                       counter_window['Trailer_count'].update(highest_count_Trailer)
+                   elif object_name == 'Commercial Vehicle' and counter > highest_count_Commercial and object_id in unique_objects:
+                       highest_count_Commercial = counter
+                       counter_window['Commercial_count'].update(highest_count_Commercial)
+                   elif object_name == 'Pedestrian' and counter > highest_count_Pedestrian and object_id in unique_objects:
+                       highest_count_Pedestrian = counter
+                       counter_window['Pedestrian_count'].update(highest_count_Pedestrian)
+                   elif object_name == 'Bus' and counter > highest_count_Bus and object_id in unique_objects:
+                       highest_count_Bus = counter
+                       counter_window['Bus_count'].update(highest_count_Bus)
+                   elif object_name == 'Motorcyclist' and counter > highest_count_Motorcyclist and object_id in unique_objects:
+                       highest_count_Motorcyclist = counter
+                       counter_window['Motorcyclist_count'].update(highest_count_Motorcyclist)
+                   elif object_name == 'Truck' and counter > highest_count_Truck and object_id in unique_objects:
+                       highest_count_Truck = counter
+                       counter_window['Truck_count'].update(highest_count_Truck)
+"""
