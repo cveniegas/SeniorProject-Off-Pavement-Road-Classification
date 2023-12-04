@@ -1,0 +1,7 @@
+Truck
+Trailer
+Car
+Commercial Vehicle
+Bus
+Pedestrian
+Motorcycle

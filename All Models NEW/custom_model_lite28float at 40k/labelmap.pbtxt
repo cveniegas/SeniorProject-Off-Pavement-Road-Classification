@@ -1,0 +1,35 @@
+item {
+  id: 1
+  name: 'Truck'
+}
+
+item {
+  id: 2
+  name: 'Trailer'
+}
+
+item {
+  id: 3
+  name: 'Car'
+}
+
+item {
+  id: 4
+  name: 'Commercial Vehicle'
+}
+
+item {
+  id: 5
+  name: 'Bus'
+}
+
+item {
+  id: 6
+  name: 'Pedestrian'
+}
+
+item {
+  id: 7
+  name: 'Motorcycle'
+}
+
