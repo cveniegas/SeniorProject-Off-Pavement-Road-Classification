@@ -1,0 +1,18 @@
+Total count for the North zone: 1
+Total count for the West zone: 2
+Total count for the South zone: 0
+Total count for the East zone: 5
+Total sum of counts for all zones: 8
+
+Total count for the North zone: 1
+Total count for the West zone: 2
+Total count for the South zone: 0
+Total count for the East zone: 5
+Total sum of counts for all zones: 8
+
+Total count for the North zone: 1
+Total count for the West zone: 2
+Total count for the South zone: 0
+Total count for the East zone: 5
+Total sum of counts for all zones: 8
+
