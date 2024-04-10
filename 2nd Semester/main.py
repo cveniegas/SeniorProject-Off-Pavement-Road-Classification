@@ -40,7 +40,7 @@ class MainWindow(QMainWindow):
         self.ui.browseVid.clicked.connect(self.browse_video)
         self.ui.stop.clicked.connect(self.stopButton)
         self.ui.quit.clicked.connect(self.quitButton)
-        ########self.ui.credits.clicked.connect(self.creditsButton)
+        self.ui.credits.clicked.connect(self.creditsButton)
         # START
         self.ui.start.clicked.connect(self.start_video_processing)
 
@@ -55,7 +55,15 @@ class MainWindow(QMainWindow):
         msg_box.setText(message)
         msg_box.exec_()
     
-    
+    def creditsButton(self):
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Information)
+        msg_box.setWindowTitle("Credits")
+        msg_box.setText("This application was created by The Hornet Engineers.\n\n"
+                        "Team: Ian Ichwara, Aleksandr Dorokhin, and Christian Veniegas\n\n"
+                        "Version 0.1.1\n"
+                        "© 2024 All rights reserved.")
+        msg_box.exec_()
 
     def stopButton(self):
         try:
