@@ -141,14 +141,12 @@ class VideoProcessor():
                 for frame in tqdm(frame_generator, total=self.video_info.total_frames):
                     if self.stopped:  # Check if processing should stop
                         break
-                    
                     annotated_frame = self.process_frame(frame)
                     sink.write_frame(annotated_frame)
         else:
             for frame in tqdm(frame_generator, total=self.video_info.total_frames):
                 annotated_frame = self.process_frame(frame)
-                
-                annotated_frame = self.process_frame(frame)
+
                 cv2.imshow("Processed Video", annotated_frame)
                 if self.stopped:  # Check if processing should stop
                         break
