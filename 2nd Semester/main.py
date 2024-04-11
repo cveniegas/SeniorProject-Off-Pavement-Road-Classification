@@ -75,7 +75,7 @@ class MainWindow(QMainWindow):
 
     
     def quitButton(self):
-        print(" Quitting Applicatioin")
+        print(" Quitting Application")
         cv2.destroyAllWindows()
         QApplication.quit()
 
@@ -142,8 +142,6 @@ class VideoProcessThread(QThread):
     # Define a signal to indicate when the video processing is finished
     finished = Signal()
     progress_updated = Signal(int)
-    ImageUpdate = Signal(QImage)
-
     def __init__(self):
         super().__init__()
         self.video_path = ""
@@ -201,17 +199,20 @@ class VideoProcessThread(QThread):
         self.north = self.processor.get_north_count()
         self.south = self.processor.get_south_count()
         self.sum = self.processor.get_sum_count()
-
+        
+        print ("Done")
         mainWindow.ui.NorthVar.setText(str(self.north))
+        print ("Done")
         mainWindow.ui.SouthVar.setText(str(self.south))
+        print ("Done")
         mainWindow.ui.EastVar.setText(str(self.east))
+        print ("Done")
         mainWindow.ui.WestVar.setText(str(self.west))
+        print ("Done")
         mainWindow.ui.totalVar.setText(str(self.sum))
-
-
+        print ("Done")
         
 
-        
 
     def stop(self):
         self.processor.stop_video()
