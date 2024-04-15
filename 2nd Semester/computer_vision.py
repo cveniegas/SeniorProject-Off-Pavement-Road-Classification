@@ -122,9 +122,9 @@ class VideoProcessor():
             ZONE_OUT_POLYGONS, self.video_info.resolution_wh, [sv.Position.CENTER]
         )
 
-        self.bounding_box_annotator = sv.BoundingBoxAnnotator(color=COLORS)
+        self.bounding_box_annotator = sv.BoundingBoxAnnotator(color=COLORS,thickness=1)
         self.label_annotator = sv.LabelAnnotator(
-            color=COLORS, text_color=sv.Color.BLACK
+            color=COLORS, text_color=sv.Color.BLACK,text_scale=0.3,text_padding=5
         )
         self.trace_annotator = sv.TraceAnnotator(
             color=COLORS, position=sv.Position.CENTER, trace_length=100, thickness=2
@@ -164,13 +164,13 @@ class VideoProcessor():
         annotated_frame = frame.copy()
         for i, (zone_in, zone_out) in enumerate(zip(self.zones_in, self.zones_out)):
             annotated_frame = sv.draw_polygon(
-                annotated_frame, zone_in.polygon, COLORS.colors[i]
+                annotated_frame, zone_in.polygon, COLORS.colors[i],thickness=1
             )
             annotated_frame = sv.draw_polygon(
-                annotated_frame, zone_out.polygon, COLORS.colors[i]
+                annotated_frame, zone_out.polygon, COLORS.colors[i],thickness=1
             )
 
-        labels = [f"{tracker_id}" for tracker_id in detections.tracker_id]
+        labels = [f"Traker ID: {tracker_id}" for tracker_id in detections.tracker_id]
 
         annotated_frame = self.trace_annotator.annotate(annotated_frame, detections)
         annotated_frame = self.bounding_box_annotator.annotate(
@@ -192,13 +192,13 @@ class VideoProcessor():
                 total_count_zone_out = 0
                 for i, zone_in_id in enumerate(counts):
                     count = len(self.detections_manager.counts[zone_out_id][zone_in_id])
-                    text_anchor = sv.Point(x=zone_center.x, y=zone_center.y + 40 * i)
+                    text_anchor = sv.Point(x=zone_center.x, y=zone_center.y + 25 * i)
                     total_count_zone_out += count
                     annotated_frame = sv.draw_text(
                         scene=annotated_frame,
                         text=str(count),
                         text_anchor=text_anchor,
-                        background_color=COLORS.colors[zone_in_id],
+                        background_color=COLORS.colors[zone_in_id],text_padding=5,text_scale=0.4
                     )
                     frame_counter += 1
 
@@ -284,7 +284,7 @@ if __name__ == "__main__":
 
     processor = VideoProcessor(
         roboflow_api_key="HOlvoPdcKkvJa5DvYZr0",
-        model_id="vehicle-detection-fjtcf/3",
+        model_id="vehicle-detection-fjtcf/4",
         source_video_path=r"C:\Users\chris\SeniorProject-Off-Pavement-Road-Classification-main\VIDEOS\test#4.mp4",
         confidence_threshold=0.3,
         iou_threshold=0.7,
