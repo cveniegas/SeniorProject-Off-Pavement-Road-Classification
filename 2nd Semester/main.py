@@ -1,15 +1,14 @@
 import sys
-from PySide2.QtCore import Qt ,Signal,QThread
-from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
-    QRect, QSize, QUrl, Qt)
-from PySide2.QtWidgets import QApplication, QMainWindow, QFileDialog
+from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from PyQt5.QtCore import QCoreApplication, QMetaObject, QObject, QPoint
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
 from PyQt5.QtGui import QImage, QPixmap
 from ui_Project3 import Ui_MainWindow
 import cv2
 import warnings
 import time
 from computer_vision import VideoProcessor
-from PySide2.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox
 videoPath = ""
 import os
 from inference import InferencePipeline
@@ -140,8 +139,8 @@ class MainWindow(QMainWindow):
 # Create a custom thread class for video processing
 class VideoProcessThread(QThread):
     # Define a signal to indicate when the video processing is finished
-    finished = Signal()
-    progress_updated = Signal(int)
+    finished = pyqtSignal()
+    progress_updated = pyqtSignal(int)
     def __init__(self):
         super().__init__()
         self.video_path = ""
@@ -159,7 +158,7 @@ class VideoProcessThread(QThread):
         on_prediction=render_boxes
 
         self.pipeline = InferencePipeline.init(
-            model_id="vehicle-detection-fjtcf/3",
+            model_id="vehicle-detection-fjtcf/4",
             video_reference=self.video_path,
             on_prediction=render_boxes
         )
@@ -173,8 +172,8 @@ class VideoProcessThread(QThread):
         # Live: Traffic Analysis
         if mainWindow.ui.trafficAnalysis.isChecked():
             self.processor = VideoProcessor(
-                        roboflow_api_key="HOlvoPdcKkvJa5DvYZr0",
-                        model_id="vehicle-detection-fjtcf/3",
+                        roboflow_api_key="7cqKpzjVQJcEn7uiHkdC",
+                        model_id="vehicle-detection-fjtcf/4",
                         source_video_path=self.video_path,
                         confidence_threshold=0.3,
                         iou_threshold=0.7,
@@ -185,8 +184,8 @@ class VideoProcessThread(QThread):
             current_directory = os.path.dirname(os.path.abspath(__file__))
             target_video_path = os.path.join(current_directory, "Video_out.mp4")
             self.processor = VideoProcessor(
-                        roboflow_api_key="HOlvoPdcKkvJa5DvYZr0",
-                        model_id="vehicle-detection-fjtcf/3",
+                        roboflow_api_key="7cqKpzjVQJcEn7uiHkdC",
+                        model_id="vehicle-detection-fjtcf/4",
                         source_video_path=self.video_path,
                         target_video_path=target_video_path,
                         confidence_threshold=0.3,
